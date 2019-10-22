@@ -66,7 +66,14 @@ void loop() {
   Serial.println("°C");
   pantalla(t,h);
 
-  if (t<=30)
+  if (t <25)
+  {
+    //azul
+    color(0, 0, 255);
+    digitalWrite(relayInput, LOW);
+  }
+  
+  else if (t >=25 && t<=30)
   {
     //verde
     color(0, 255, 0);
