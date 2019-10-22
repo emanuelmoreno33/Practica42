@@ -16,6 +16,7 @@ DHT dht(DHTPIN, DHTTYPE);
 
 //PANTALLA LCD
 LiquidCrystal_I2C lcd(0x27,16,2);
+//byte para crear este simbolo -> °
 byte N[8] = {
 B01110,
 B01010,
@@ -28,7 +29,7 @@ B00000,
 };
 
 //RELAY
-int relayInput = 15;
+int relayInput = 2;
 int contador = 0;
 bool condicion = false;
  
@@ -45,11 +46,16 @@ void setup() {
 }
  
 void loop() {
-  delay(1000);
+  delay(500);
   float h = dht.readHumidity();
   float t = dht.readTemperature();
   if (isnan(h) || isnan(t)) {
     Serial.println("Error obteniendo los datos del sensor DHT11");
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Espera un momento");
+  lcd.setCursor(0,1);
+  lcd.print("No se reciben datos");
     return;
   }
   Serial.print("Humedad: ");
@@ -60,20 +66,20 @@ void loop() {
   Serial.println("°C");
   pantalla(t,h);
 
-  if (t<30)
+  if (t<=30)
   {
     //verde
     color(0, 255, 0);
     digitalWrite(relayInput, LOW);
   }
-  else if (t>=33 && t<40)
+  else if (t>30 && t<40)
   {
     //amarillo
     color(255, 255, 0);
     digitalWrite(relayInput, LOW);
     
   }
-  else
+  else if (t>=40)
   {
     //rojo
     color(255, 0, 0);
